@@ -1,7 +1,20 @@
+﻿using Frontend.WebUI.Services.Implementation;
+using Frontend.WebUI.Services.Interface;
+using Frontend.WebUI.Utility;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+// dùng httpfactory phải có
+builder.Services.AddHttpClient();
+
+Constants.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
+
+builder.Services.AddScoped<IBaseService, BaseService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
 var app = builder.Build();
 
