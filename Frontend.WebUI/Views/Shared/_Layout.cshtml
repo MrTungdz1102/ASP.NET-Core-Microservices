@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Frontend.WebUI</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css"/>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Frontend.WebUI.styles.css" asp-append-version="true" />
@@ -31,8 +32,8 @@
                                 Content Management
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-controller="Coupon" asp-action="CouponIndex">Coupon</a></li>
-                                <li><a class="dropdown-item" asp-controller="Product" asp-action="ProductIndex">Product</a></li>
+                                <li><a class="dropdown-item" asp-controller="Coupon" asp-action="Index">Coupon</a></li>
+                                <li><a class="dropdown-item" asp-controller="Product" asp-action="Index">Product</a></li>
                                 <li><hr class="dropdown-divider"></li>
                             </ul>
                         </li>
@@ -44,6 +45,7 @@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+            @await Html.PartialAsync("_PartialNotification")
         </main>
     </div>
 

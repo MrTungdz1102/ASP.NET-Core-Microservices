@@ -28,7 +28,7 @@ namespace Services.CouponAPI.Controllers
 			if (coupons is null)
 			{
 				_response.IsSuccess = false;
-				_response.Message = "cannot find out the coupon";
+				_response.Message = "Cannot find out the coupon";
 			}
 			return _response;
 		}
@@ -41,7 +41,7 @@ namespace Services.CouponAPI.Controllers
 			if (coupon is null)
 			{
 				_response.IsSuccess = false;
-				_response.Message = "cannot find out the coupon";
+				_response.Message = "Cannot find out the coupon";
 			}
 			return _response;
 		}
@@ -54,7 +54,7 @@ namespace Services.CouponAPI.Controllers
 			if (coupon is null)
 			{
 				_response.IsSuccess = false;
-				_response.Message = "cannot find out the coupon";
+				_response.Message = "Cannot find out the coupon";
 			}
 			return _response;
 		}
@@ -72,10 +72,14 @@ namespace Services.CouponAPI.Controllers
 		public async Task<ActionResult<ResponseDTO>> UpdateCoupon([FromRoute] int id, [FromBody] CouponDTO couponDTO)
 		{
 			var coupon = await _context.Coupons.FindAsync(id);
+			if(id != couponDTO.CouponId)
+			{
+				return BadRequest();
+			}
 			if (coupon is null)
 			{
 				_response.IsSuccess = false;
-				_response.Message = "cannot find out the coupon";
+				_response.Message = "Cannot find out the coupon";
 			}
 			else
 			{
@@ -94,7 +98,7 @@ namespace Services.CouponAPI.Controllers
 			if (coupon is null)
 			{
 				_response.IsSuccess = false;
-				_response.Message = "cannot find out the coupon";
+				_response.Message = "Cannot find out the coupon";
 			}
 			else
 			{
