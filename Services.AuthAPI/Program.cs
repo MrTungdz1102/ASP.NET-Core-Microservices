@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using Services.AuthAPI.Configuration;
 using Services.AuthAPI.Data;
 using Services.AuthAPI.Models;
+using Services.AuthAPI.Services.Implementation;
+using Services.AuthAPI.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +18,14 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 	option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddAutoMapper(typeof(MapConfig));
+
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JWT"));
+
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
