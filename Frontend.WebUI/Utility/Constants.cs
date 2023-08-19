@@ -3,7 +3,11 @@
 	public class Constants
 	{
 		public static string CouponAPIBase { get; set; }
-		public enum ApiType
+		public static string AuthAPIBase { get; set; }
+        public const string RoleAdmin = "ADMIN";
+        public const string RoleUser = "USER";
+        public const string TokenCookie = "JWTToken";
+        public enum ApiType
 		{
 			GET,
 			POST,

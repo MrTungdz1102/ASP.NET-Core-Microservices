@@ -34,7 +34,8 @@ namespace Services.AuthAPI.Services.Implementation
 			}
 			else
 			{
-				var token = _jwtToken.GenerateToken(_user);
+				var roles = await _userManager.GetRolesAsync(_user);
+				var token = _jwtToken.GenerateToken(_user, roles);
 				return new LoginResponseDTO { User = _mapper.Map<UserDTO>(_user), Token = token };
 			}
 		}

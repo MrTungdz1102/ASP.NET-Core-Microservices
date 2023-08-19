@@ -10,11 +10,14 @@ namespace Frontend.WebUI.Services.Implementation
 	public class BaseService : IBaseService
 	{
 		private readonly IHttpClientFactory _httpClientFactory;
-		public BaseService(IHttpClientFactory httpClientFactory)
+        private readonly ITokenProvider _token;
+
+        public BaseService(IHttpClientFactory httpClientFactory, ITokenProvider token)
 		{
 			_httpClientFactory = httpClientFactory;
+			_token = token;
 		}
-		public async Task<ResponseDTO?> SendAsync(RequestDTO requestDTO)
+		public async Task<ResponseDTO?> SendAsync(RequestDTO requestDTO, bool withBearer = true)
 		{
 			try
 			{
@@ -24,6 +27,12 @@ namespace Frontend.WebUI.Services.Implementation
 				// ưu tiên nhận dữ liệu dưới định dạng JSON nếu có sẵn
 				// client vẫn sẽ nhận được dữ liệu nếu dữ liệu trả về khác với json
 				message.Headers.Add("Accept", "application/json");
+
+				if(withBearer)
+				{
+					var token = _token.GetToken();
+					message.Headers.Add("Authorization", $"Bearer {token}");
+				}
 
 				message.RequestUri = new Uri(requestDTO.Url);
 				if (requestDTO.Data != null)

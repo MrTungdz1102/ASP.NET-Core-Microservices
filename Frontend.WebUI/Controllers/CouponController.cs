@@ -20,7 +20,11 @@ namespace Frontend.WebUI.Controllers
 			if(response is not null && response.IsSuccess) {
 				coupons = JsonConvert.DeserializeObject<List<CouponDTO>>(Convert.ToString(response.Result));
 			}
-			return View(coupons);
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+            return View(coupons);
 		}
 
 		public IActionResult CreateCoupon()
@@ -52,7 +56,11 @@ namespace Frontend.WebUI.Controllers
 			{
 				coupon = JsonConvert.DeserializeObject<CouponDTO>(Convert.ToString(response.Result));
 			}
-			return View(coupon);
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+            return View(coupon);
 		}
 
 		[HttpPost]

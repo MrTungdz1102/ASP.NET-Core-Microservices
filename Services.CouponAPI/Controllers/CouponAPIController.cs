@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.CouponAPI.Data;
@@ -9,6 +10,7 @@ namespace Services.CouponAPI.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize]
 	public class CouponAPIController : ControllerBase
 	{
 		private readonly AppDbContext _context;
@@ -59,7 +61,8 @@ namespace Services.CouponAPI.Controllers
 			return _response;
 		}
 		[HttpPost("CreateCoupon")]
-		public async Task<ActionResult<ResponseDTO>> CreateCoupon([FromBody] CouponDTO couponDTO)
+        [Authorize(Roles = "ADMIN")]
+        public async Task<ActionResult<ResponseDTO>> CreateCoupon([FromBody] CouponDTO couponDTO)
 		{
 			var coupon = _mapper.Map<Coupon>(couponDTO);
 			await _context.Coupons.AddAsync(coupon);
@@ -69,7 +72,8 @@ namespace Services.CouponAPI.Controllers
 		}
 
 		[HttpPut("UpdateCoupon/{id:int}")]
-		public async Task<ActionResult<ResponseDTO>> UpdateCoupon([FromRoute] int id, [FromBody] CouponDTO couponDTO)
+        [Authorize(Roles = "ADMIN")]
+        public async Task<ActionResult<ResponseDTO>> UpdateCoupon([FromRoute] int id, [FromBody] CouponDTO couponDTO)
 		{
 			var coupon = await _context.Coupons.FindAsync(id);
 			if(id != couponDTO.CouponId)
@@ -92,7 +96,8 @@ namespace Services.CouponAPI.Controllers
 		}
 
 		[HttpDelete("DeleteCoupon/{id:int}")]
-		public async Task<ActionResult<ResponseDTO>> DeleteCoupon(int id)
+        [Authorize(Roles = "ADMIN")]
+        public async Task<ActionResult<ResponseDTO>> DeleteCoupon(int id)
 		{
 			var coupon = await _context.Coupons.FindAsync(id);
 			if (coupon is null)

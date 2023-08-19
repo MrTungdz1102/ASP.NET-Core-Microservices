@@ -17,7 +17,7 @@ namespace Services.AuthAPI.Services.Implementation
 		{
 			_jwtOptions = jwtOptions.Value;
 		}
-		public string GenerateToken(AppUser appUser)
+		public string GenerateToken(AppUser appUser, IEnumerable<string> roles)
 		{
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var securityKey = Encoding.ASCII.GetBytes(_jwtOptions.SecretKey);
@@ -36,6 +36,9 @@ namespace Services.AuthAPI.Services.Implementation
 				//"typ"(Token Type): Loại token.
 				// new Claim("uid", _user.Id),
 			};
+
+			claimList.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
 			var tokenDescriptor = new SecurityTokenDescriptor
 			{
 				Audience = _jwtOptions.Audience,
