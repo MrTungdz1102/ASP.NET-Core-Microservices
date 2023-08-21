@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frontend.WebUI", "Frontend.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.AuthAPI", "Services.AuthAPI\Services.AuthAPI.csproj", "{2CCD6392-6F77-425D-9710-4EE5E2220503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.ProductAPI", "Services.ProductAPI\Services.ProductAPI.csproj", "{713F9574-0584-4CE7-BEA1-7EE612EC3260}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.ProductAPI", "Services.ProductAPI\Services.ProductAPI.csproj", "{713F9574-0584-4CE7-BEA1-7EE612EC3260}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.ShoppingCartAPI", "Services.ShoppingCartAPI\Services.ShoppingCartAPI.csproj", "{CF89D4F1-8085-4E4A-82F2-5CE5A56B08AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{713F9574-0584-4CE7-BEA1-7EE612EC3260}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{713F9574-0584-4CE7-BEA1-7EE612EC3260}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{713F9574-0584-4CE7-BEA1-7EE612EC3260}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF89D4F1-8085-4E4A-82F2-5CE5A56B08AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF89D4F1-8085-4E4A-82F2-5CE5A56B08AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF89D4F1-8085-4E4A-82F2-5CE5A56B08AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF89D4F1-8085-4E4A-82F2-5CE5A56B08AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{1334FF00-5B2A-4351-AEF3-5494349D9FBA} = {2E656A92-3AEF-4F65-9F51-C7DC5B7380D4}
 		{2CCD6392-6F77-425D-9710-4EE5E2220503} = {3D4C2342-BCBC-4FC8-82A9-FEDE9E1B4D7C}
 		{713F9574-0584-4CE7-BEA1-7EE612EC3260} = {3D4C2342-BCBC-4FC8-82A9-FEDE9E1B4D7C}
+		{CF89D4F1-8085-4E4A-82F2-5CE5A56B08AB} = {3D4C2342-BCBC-4FC8-82A9-FEDE9E1B4D7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72C9A97F-50AB-4DCA-9911-42F1AA2C1D08}

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Frontend.WebUI.Models.DTOs
+﻿namespace Services.ShoppingCartAPI.Models.DTOs
 {
     public class ProductDTO
     {
@@ -10,7 +8,5 @@ namespace Frontend.WebUI.Models.DTOs
         public string Description { get; set; }
         public string CategoryName { get; set; }
         public string? ImageUrl { get; set; }
-        [Range(1, 100)]
-        public int Count { get; set; } = 1;
     }
 }
