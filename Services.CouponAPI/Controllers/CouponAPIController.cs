@@ -52,12 +52,12 @@ namespace Services.CouponAPI.Controllers
 		public async Task<ActionResult<ResponseDTO>> GetByCode(string code)
 		{
 			var coupon = await _context.Coupons.SingleOrDefaultAsync(x => x.CouponCode.ToLower() == code.ToLower());
-			_response.Result = _mapper.Map<CouponDTO>(coupon);
-			if (coupon is null)
-			{
-				_response.IsSuccess = false;
-				_response.Message = "Cannot find out the coupon";
-			}
+            if (coupon is null)
+            {
+                _response.IsSuccess = false;
+                _response.Message = "Cannot find out the coupon";
+            }
+            _response.Result = _mapper.Map<CouponDTO>(coupon);
 			return _response;
 		}
 		[HttpPost("CreateCoupon")]

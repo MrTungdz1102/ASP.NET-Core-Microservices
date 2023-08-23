@@ -15,10 +15,10 @@ namespace Services.ShoppingCartAPI.Service.Implementation
         public async Task<CouponDTO> GetCoupon(string couponCode)
         {
             HttpClient client = _http.CreateClient("Coupon");
-            HttpResponseMessage response = await client.GetAsync("api/CouponAPI/GetByCode/" + couponCode);
+            HttpResponseMessage response = await client.GetAsync("/api/CouponAPI/GetByCode/" + couponCode);
             var apiContent = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ResponseDTO>(apiContent);
-            if(result.IsSuccess)
+            if( result is not null && result.IsSuccess)
             {
                 return JsonConvert.DeserializeObject<CouponDTO>(Convert.ToString(result.Result));
             }

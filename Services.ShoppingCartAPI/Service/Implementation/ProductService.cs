@@ -18,7 +18,7 @@ namespace Services.ShoppingCartAPI.Service.Implementation
             var response = await client.GetAsync("api/ProductAPI/GetAllProduct");
             var apiContent = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<ResponseDTO>(apiContent);
-            if(result.IsSuccess)
+            if(result is not null && result.IsSuccess)
             {
                 return JsonConvert.DeserializeObject<IEnumerable<ProductDTO>>(Convert.ToString(result.Result));
             }

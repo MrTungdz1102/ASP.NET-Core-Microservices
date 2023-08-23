@@ -74,10 +74,19 @@ namespace Services.ShoppingCartAPI.Controllers
             try
             {
                 var cartFromDb = await _context.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
-                cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
-                _context.CartHeaders.Update(cartFromDb);
-                await _context.SaveChangesAsync();
-                _response.Result = true;
+                var couponFromDb = await _couponService.GetCoupon(cartDto.CartHeader.CouponCode);
+                if (string.IsNullOrEmpty(couponFromDb.CouponCode))
+                {
+                    _response.IsSuccess = false;
+                    _response.Message = "Coupon is not valid";
+                }
+                else
+                {
+                    cartFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+                    _context.CartHeaders.Update(cartFromDb);
+                    await _context.SaveChangesAsync();
+                    _response.Result = true;
+                }
             }
             catch (Exception ex)
             {
