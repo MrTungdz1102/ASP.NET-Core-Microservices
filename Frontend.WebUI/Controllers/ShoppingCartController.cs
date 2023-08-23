@@ -76,5 +76,20 @@ namespace Frontend.WebUI.Controllers
             }
             return new CartDTO();
         }
+
+        // message bus
+        [HttpPost]
+        public async Task<IActionResult> EmailCart(CartDTO cartDto)
+        {
+            CartDTO cart = await LoadCartOnLoggedUser();
+            cart.CartHeader.Email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
+            ResponseDTO? response = await _cartService.EmailCart(cart);
+            if (response != null & response.IsSuccess)
+            {
+                TempData["success"] = "Email will be processed and sent shortly.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
     }
 }

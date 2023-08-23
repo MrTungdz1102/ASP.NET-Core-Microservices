@@ -22,6 +22,17 @@ namespace Frontend.WebUI.Services.Implementation
             });
         }
 
+        // message bus
+        public async Task<ResponseDTO?> EmailCart(CartDTO cartDTO)
+        {
+            return await _baseService.SendAsync(new RequestDTO
+            {
+                ApiType = Constants.ApiType.POST,
+                Url = Constants.ShoppingCartAPIBase + "/api/ShoppingCartAPI/EmailCartRequest",
+                Data = cartDTO
+            });
+        }
+
         public async Task<ResponseDTO?> GetCartByUserId(string userId)
         {
             return await _baseService.SendAsync(new RequestDTO

@@ -8,5 +8,8 @@ namespace Frontend.WebUI.Services.Interface
         Task<ResponseDTO?> UpSertCart(CartDTO cartDTO);
         Task<ResponseDTO?> RemoveCart(int cartDetailId);
         Task<ResponseDTO?> ApplyCoupon(CartDTO cartDTO);
+
+        // message bus
+        Task<ResponseDTO?> EmailCart(CartDTO cartDTO);
     }
 }
