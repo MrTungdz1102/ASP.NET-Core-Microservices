@@ -101,7 +101,7 @@ namespace Services.ShoppingCartAPI.Controllers
         }
 
         [HttpPost("EmailCartRequest")]
-        public async Task<object> EmailCartRequest([FromBody] CartDto cartDto)
+        public async Task<object> EmailCartRequest([FromBody] CartDTO cartDto)
         {
             try
             {
