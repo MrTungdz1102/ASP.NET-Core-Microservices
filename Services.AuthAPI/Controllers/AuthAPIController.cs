@@ -1,7 +1,9 @@
 ﻿using Azure;
+using Integration.MessageBus;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Services.AuthAPI.Models.DTOs;
 using Services.AuthAPI.Services.Interface;
 
@@ -13,9 +15,13 @@ namespace Services.AuthAPI.Controllers
 	{
 		private readonly IAuthService _auth;
 		private ResponseDTO _response;
-		public AuthAPIController(IAuthService auth)
+		private readonly IConfiguration _configuration;
+		private readonly IMessageBus _messageBus;
+		public AuthAPIController(IAuthService auth, IConfiguration configuration, IMessageBus messageBus)
 		{
 			_auth = auth;
+			_messageBus = messageBus;
+			_configuration = configuration;
 			_response = new ResponseDTO();
 		}
 		[HttpPost("register")]
@@ -34,7 +40,9 @@ namespace Services.AuthAPI.Controllers
 			else
 			{
 				_response.Message = "Thanh cong";
-			}
+				// using azure message bus
+               // await _messageBus.PublishMessage(registration.Email, _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserEmailQueue"));
+            }
 			return Ok(_response);
 		}
 
