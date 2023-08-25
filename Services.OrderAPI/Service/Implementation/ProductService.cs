@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Services.ShoppingCartAPI.Models.DTOs;
-using Services.ShoppingCartAPI.Service.Interface;
+using Services.OrderAPI.Models.DTOs;
+using Services.OrderAPI.Service.Interface;
 
-namespace Services.ShoppingCartAPI.Service.Implementation
+namespace Services.OrderAPI.Service.Implementation
 {
     public class ProductService : IProductService
     {

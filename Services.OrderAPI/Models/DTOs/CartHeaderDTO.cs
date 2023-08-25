@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Frontend.WebUI.Models.DTOs
+namespace Services.OrderAPI.Models.DTOs
 {
     public class CartHeaderDTO
     {
@@ -9,11 +9,11 @@ namespace Frontend.WebUI.Models.DTOs
         public string? CouponCode { get; set; }
         public double Discount { get; set; }
         public double CartTotal { get; set; }
-        [Required]
+     
         public string? Name { get; set; }
-        [Required]
+    
         public string? Phone { get; set; }
-        [Required]
+      
         public string? Email { get; set; }
     }
 }

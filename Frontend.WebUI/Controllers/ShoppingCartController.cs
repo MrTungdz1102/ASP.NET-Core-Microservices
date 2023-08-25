@@ -11,15 +11,41 @@ namespace Frontend.WebUI.Controllers
     public class ShoppingCartController : Controller
     {
         private readonly IShoppingCartService _cartService;
+        private readonly IOrderService _orderService;
 
-        public ShoppingCartController(IShoppingCartService cartService)
+        public ShoppingCartController(IShoppingCartService cartService, IOrderService orderService)
         {
             _cartService = cartService;
+            _orderService = orderService;
         }
         [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await LoadCartOnLoggedUser());
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Checkout()
+        {
+            return View(await LoadCartOnLoggedUser());
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Checkout(CartDTO cartDTO)
+        {
+            CartDTO cart = await LoadCartOnLoggedUser();
+            cart.CartHeader.Phone = cartDTO.CartHeader.Phone;
+            cart.CartHeader.Email = cartDTO.CartHeader.Email;
+            cart.CartHeader.Name = cartDTO.CartHeader.Name;
+
+            var response = await _orderService.CreateOrder(cart);
+            OrderHeaderDTO orderHeaderDTO = JsonConvert.DeserializeObject<OrderHeaderDTO>(Convert.ToString(response.Result));
+            if(response.IsSuccess && response is not null)
+            {
+
+            }
+            return View(cartDTO);
         }
 
         public async Task<IActionResult> RemoveProduct(int id)

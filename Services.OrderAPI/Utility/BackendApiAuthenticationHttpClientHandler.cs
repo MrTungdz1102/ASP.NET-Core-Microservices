@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using System.Net.Http.Headers;
 
-namespace Services.ShoppingCartAPI.Utility
+namespace Services.OrderAPI.Utility
 {
     // su dung khi co authorize controller o cac service khac
     public class BackendApiAuthenticationHttpClientHandler : DelegatingHandler
