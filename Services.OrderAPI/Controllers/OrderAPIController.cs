@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.OrderAPI.Data;
 using Services.OrderAPI.Models;
 using Services.OrderAPI.Models.DTOs;
 using Services.OrderAPI.Service.Interface;
+using Stripe.Checkout;
 
 namespace Services.OrderAPI.Controllers
 {
@@ -30,7 +31,8 @@ namespace Services.OrderAPI.Controllers
         [HttpPost("CreateOrder")]
         public async Task<ResponseDTO> CreateOrder([FromBody] CartDTO cartDTO)
         {
-            try { 
+            try
+            {
                 OrderHeaderDTO orderHeaderDTO = _mapper.Map<OrderHeaderDTO>(cartDTO.CartHeader);
                 orderHeaderDTO.OrderTime = DateTime.Now;
                 orderHeaderDTO.Status = Utility.Constants.Status_Pending;
@@ -43,9 +45,56 @@ namespace Services.OrderAPI.Controllers
                 orderHeaderDTO.OrderHeaderId = orderHeaderCreated.OrderHeaderId;
                 _response.Result = orderHeaderDTO;
             }
-            catch(Exception ex) { 
+            catch (Exception ex)
+            {
                 _response.IsSuccess = false;
                 _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        [HttpPost("CreateStripeSession")]
+        public async Task<ResponseDTO> CreateStripeSession([FromBody] StripeRequestDTO stripeRequestDTO)
+        {
+            try
+            {
+                var options = new SessionCreateOptions
+                {
+                    SuccessUrl = stripeRequestDTO.ApprovedUrl,
+                    CancelUrl = stripeRequestDTO.CancelUrl,
+                    LineItems = new List<SessionLineItemOptions>(),
+                    Mode = "payment",
+                };
+                foreach(var item in stripeRequestDTO.OrderHeader.OrderDetails)
+                {
+                    var sessionItems = new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = (long)(item.Price * 100),
+                            Currency = "USD",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = item.ProductName,
+
+                            }
+                        },
+                        Quantity = item.Count
+                    };
+                    options.LineItems.Add(sessionItems);
+                }
+                var service = new SessionService();
+                Session session = service.Create(options);
+                stripeRequestDTO.StripeSessionUrl = session.Url;
+                OrderHeader orderHeader = await _context.OrderHeaders.FirstAsync(x => x.OrderHeaderId == stripeRequestDTO.OrderHeader.OrderHeaderId);
+                orderHeader.StripeSessionId = session.Id;
+                await _context.SaveChangesAsync();
+                _response.Result = stripeRequestDTO;
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
             }
             return _response;
         }

@@ -53,6 +53,7 @@ builder.AddAppAuthetication();
 
 builder.Services.AddAuthorization();
 
+Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 var app = builder.Build();
 
@@ -66,6 +67,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+
 
 app.MapControllers();
 ApplyMigration();

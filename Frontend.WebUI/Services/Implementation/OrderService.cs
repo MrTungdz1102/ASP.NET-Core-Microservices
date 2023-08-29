@@ -20,5 +20,15 @@ namespace Frontend.WebUI.Services.Implementation
                 ApiType = Utility.Constants.ApiType.POST
             });
         }
+
+        public async Task<ResponseDTO?> CreateStripeSession(StripeRequestDTO stripeRequestDTO)
+        {
+            return await _baseService.SendAsync(new RequestDTO
+            {
+                Url = Utility.Constants.OrderAPIBase + "/api/OrderAPI/CreateStripeSession",
+                Data = stripeRequestDTO,
+                ApiType = Utility.Constants.ApiType.POST
+            });
+        }
     }
 }

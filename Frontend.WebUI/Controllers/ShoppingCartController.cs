@@ -30,6 +30,13 @@ namespace Frontend.WebUI.Controllers
             return View(await LoadCartOnLoggedUser());
         }
 
+        [Authorize]
+        public async Task<IActionResult> ConfirmOrder(int orderId)
+        {
+            return View(orderId);
+        }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Checkout(CartDTO cartDTO)
@@ -43,7 +50,17 @@ namespace Frontend.WebUI.Controllers
             OrderHeaderDTO orderHeaderDTO = JsonConvert.DeserializeObject<OrderHeaderDTO>(Convert.ToString(response.Result));
             if(response.IsSuccess && response is not null)
             {
-
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
+                StripeRequestDTO stripe = new StripeRequestDTO
+                {
+                    ApprovedUrl = domain + "ShoppingCart/ConfirmOrder?orderId=" + orderHeaderDTO.OrderHeaderId,
+                    CancelUrl = domain + "ShoppingCart/Checkout",
+                    OrderHeader = orderHeaderDTO,
+                };
+                var stripeResponse = await _orderService.CreateStripeSession(stripe);
+                StripeRequestDTO result = JsonConvert.DeserializeObject<StripeRequestDTO>(Convert.ToString(stripeResponse.Result));
+                Response.Headers.Add("Location", result.StripeSessionUrl);
+                return new StatusCodeResult(303);
             }
             return View(cartDTO);
         }

@@ -6,6 +6,7 @@ using Services.CouponAPI.Data;
 using Services.CouponAPI.Models;
 using Services.CouponAPI.Models.DTOs;
 
+
 namespace Services.CouponAPI.Controllers
 {
 	[Route("api/[controller]")]
@@ -67,7 +68,19 @@ namespace Services.CouponAPI.Controllers
 			var coupon = _mapper.Map<Coupon>(couponDTO);
 			await _context.Coupons.AddAsync(coupon);
 			await _context.SaveChangesAsync();
-			_response.Result = _mapper.Map<CouponDTO>(coupon);
+			
+			// create stripe coupon
+            var options = new Stripe.CouponCreateOptions
+            {
+                AmountOff = (long)couponDTO.DiscountAmount*100,
+				Name = couponDTO.CouponCode,
+				Currency = "USD",
+				Id = couponDTO.CouponCode
+            };
+            var service = new Stripe.CouponService();
+            await service.CreateAsync(options);
+
+            _response.Result = _mapper.Map<CouponDTO>(coupon);
 			return _response;
 		}
 
@@ -109,7 +122,10 @@ namespace Services.CouponAPI.Controllers
 			{
 				_context.Remove(coupon);
 				await _context.SaveChangesAsync();
-			}
+                
+                var service = new Stripe.CouponService();
+                await service.DeleteAsync(coupon.CouponCode);
+            }
 			return _response;
 		}
 	}

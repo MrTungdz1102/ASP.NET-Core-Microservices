@@ -1,4 +1,3 @@
-
 using Integration.MessageBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +7,7 @@ using Services.OrderAPI.Data;
 using Services.OrderAPI.Service.Implementation;
 using Services.OrderAPI.Service.Interface;
 using Services.OrderAPI.Utility;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,7 +78,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
+Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.MapControllers();
 ApplyMigration();
 app.Run();
