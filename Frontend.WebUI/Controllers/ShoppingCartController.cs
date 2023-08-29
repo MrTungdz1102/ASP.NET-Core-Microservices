@@ -33,6 +33,15 @@ namespace Frontend.WebUI.Controllers
         [Authorize]
         public async Task<IActionResult> ConfirmOrder(int orderId)
         {
+            ResponseDTO? response = await _orderService.ValidateStripeSession(orderId);
+            if (response is not null && response.IsSuccess)
+            {
+                OrderHeaderDTO orderHeaderDTO = JsonConvert.DeserializeObject<OrderHeaderDTO>(Convert.ToString(response.Result));
+                if(orderHeaderDTO.Status == Utility.Constants.Status_Approved)
+                {
+                    return View(orderId);
+                }
+            }
             return View(orderId);
         }
 

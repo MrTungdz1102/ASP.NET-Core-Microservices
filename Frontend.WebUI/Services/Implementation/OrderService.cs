@@ -30,5 +30,15 @@ namespace Frontend.WebUI.Services.Implementation
                 ApiType = Utility.Constants.ApiType.POST
             });
         }
+
+        public async Task<ResponseDTO?> ValidateStripeSession(int orderHeaderId)
+        {
+            return await _baseService.SendAsync(new RequestDTO
+            {
+                Url = Utility.Constants.OrderAPIBase + "/api/OrderAPI/ValidateStripeSession",
+                Data = orderHeaderId,
+                ApiType = Utility.Constants.ApiType.POST
+            });
+        }
     }
 }

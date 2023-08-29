@@ -6,5 +6,6 @@ namespace Frontend.WebUI.Services.Interface
     {
         Task<ResponseDTO?> CreateOrder(CartDTO cartDTO);
         Task<ResponseDTO?> CreateStripeSession(StripeRequestDTO stripeRequestDTO);
+        Task<ResponseDTO?> ValidateStripeSession(int orderHeaderId);
     }
 }

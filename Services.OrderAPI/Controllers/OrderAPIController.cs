@@ -63,9 +63,17 @@ namespace Services.OrderAPI.Controllers
                     SuccessUrl = stripeRequestDTO.ApprovedUrl,
                     CancelUrl = stripeRequestDTO.CancelUrl,
                     LineItems = new List<SessionLineItemOptions>(),
-                    Mode = "payment",
+                    Mode = "payment"
+                  
                 };
-                foreach(var item in stripeRequestDTO.OrderHeader.OrderDetails)
+                var DiscountsObj = new List<SessionDiscountOptions>
+                {
+                    new SessionDiscountOptions
+                    {
+                        Coupon = stripeRequestDTO.OrderHeader.CouponCode
+                    }
+                };
+                foreach (var item in stripeRequestDTO.OrderHeader.OrderDetails)
                 {
                     var sessionItems = new SessionLineItemOptions
                     {
@@ -83,6 +91,12 @@ namespace Services.OrderAPI.Controllers
                     };
                     options.LineItems.Add(sessionItems);
                 }
+
+                if(stripeRequestDTO.OrderHeader.Discount>0)
+                {
+                    options.Discounts = DiscountsObj;
+                }
+
                 var service = new SessionService();
                 Session session = service.Create(options);
                 stripeRequestDTO.StripeSessionUrl = session.Url;
@@ -90,6 +104,34 @@ namespace Services.OrderAPI.Controllers
                 orderHeader.StripeSessionId = session.Id;
                 await _context.SaveChangesAsync();
                 _response.Result = stripeRequestDTO;
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+            return _response;
+        }
+
+        [HttpPost("ValidateStripeSession")]
+        public async Task<ResponseDTO> ValidateStripeSession([FromBody] int orderHeaderId)
+        {
+            try
+            {
+                OrderHeader orderHeader = await _context.OrderHeaders.FirstAsync(x => x.OrderHeaderId == orderHeaderId);
+                var service = new SessionService();
+                Session session = await service.GetAsync(orderHeader.StripeSessionId);
+
+                var paymentIntentService = new Stripe.PaymentIntentService();
+                Stripe.PaymentIntent paymentIntent = await paymentIntentService.GetAsync(session.PaymentIntentId);
+
+                if(paymentIntent.Status == "succeeded")
+                {
+                    orderHeader.PaymentIntentId = paymentIntent.Id;
+                    orderHeader.Status = Utility.Constants.Status_Approved;
+                    await _context.SaveChangesAsync();
+                    _response.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
+                }
             }
             catch (Exception ex)
             {
