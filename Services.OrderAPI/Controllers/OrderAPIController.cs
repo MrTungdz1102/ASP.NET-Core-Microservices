@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Integration.MessageBus;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +20,16 @@ namespace Services.OrderAPI.Controllers
         private readonly IMapper _mapper;
         private readonly IProductService _productService;
         private readonly AppDbContext _context;
-
-        public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService)
+        private readonly IMessageBus _messageBus;
+        private readonly IConfiguration _configuration;
+        public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService, IConfiguration configuration, IMessageBus messageBus)
         {
             _context = context;
             _mapper = mapper;
             _productService = productService;
             _response = new ResponseDTO();
+            _configuration = configuration;
+            _messageBus = messageBus;
         }
 
         [HttpPost("CreateOrder")]
@@ -130,6 +134,20 @@ namespace Services.OrderAPI.Controllers
                     orderHeader.PaymentIntentId = paymentIntent.Id;
                     orderHeader.Status = Utility.Constants.Status_Approved;
                     await _context.SaveChangesAsync();
+
+                    // handle azure topic
+                    TopicDTO topicDTO = new()
+                    {
+                        OrderId = orderHeader.OrderHeaderId,
+                        UserId = orderHeader.UserId,
+
+                        // mua 1$ = 1 diem tich luy
+                        TopicActivity = Convert.ToInt32(orderHeader.OrderTotal)
+                    };
+                    // _configuration["TopicAndQueueNames:OrderCreatedTopic"]
+                    string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+                    await _messageBus.PublishMessage(topicDTO, topicName);
+
                     _response.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
                 }
             }
