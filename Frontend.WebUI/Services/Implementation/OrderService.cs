@@ -31,6 +31,34 @@ namespace Frontend.WebUI.Services.Implementation
             });
         }
 
+        public async Task<ResponseDTO?> GetAllOrder(string? userId)
+        {
+            return await _baseService.SendAsync(new RequestDTO
+            {
+                Url = Utility.Constants.OrderAPIBase + "/api/OrderAPI/GetAllOrder/" + userId,
+                ApiType = Utility.Constants.ApiType.GET
+            });
+        }
+
+        public async Task<ResponseDTO?> GetOrderById(int id)
+        {
+            return await _baseService.SendAsync(new RequestDTO
+            {
+                Url = Utility.Constants.OrderAPIBase + "/api/OrderAPI/GetOrderById/" + id,
+                ApiType = Utility.Constants.ApiType.GET
+            });
+        }
+
+        public async Task<ResponseDTO?> UpdateOrderStatus(int orderId, string newStatus)
+        {
+            return await _baseService.SendAsync(new RequestDTO
+            {
+                Url = Utility.Constants.OrderAPIBase + "/api/OrderAPI/UpdateOrderStatus/" + orderId,
+                Data = newStatus,
+                ApiType = Utility.Constants.ApiType.POST
+            });
+        }
+
         public async Task<ResponseDTO?> ValidateStripeSession(int orderHeaderId)
         {
             return await _baseService.SendAsync(new RequestDTO
