@@ -13,7 +13,7 @@ namespace Services.OrderAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class OrderAPIController : ControllerBase
     {
         protected ResponseDTO _response;
@@ -159,19 +159,19 @@ namespace Services.OrderAPI.Controllers
             return _response;
         }
 
-        [Authorize]
-        [HttpGet("GetAllOrder")]
+      
+        [HttpGet("GetAllOrder/{userId?}")]
         public async Task<ResponseDTO> GetAllOrder(string? userId = "")
         {
             // neu khong co id va roles la admin thi co the xem toan bo order
             try
             {
                 IEnumerable<OrderHeader> listOderHeader = null;
-                if (User.IsInRole("ADMIN"))
+                if (User.IsInRole(Utility.Constants.RoleAdmin))
                 {
                     listOderHeader = await _context.OrderHeaders.Include(x => x.OrderDetails).OrderByDescending(x => x.OrderHeaderId).ToListAsync();
                 }
-                else if(!string.IsNullOrEmpty(userId))
+                else
                 {
                     listOderHeader = await _context.OrderHeaders.Include(x => x.OrderDetails).Where(x => x.UserId == userId).OrderByDescending(x => x.OrderHeaderId).ToListAsync();                
                 }
@@ -185,7 +185,7 @@ namespace Services.OrderAPI.Controllers
             return _response;
         }
 
-        [Authorize]
+       
         [HttpGet("GetOrderById/{id:int}")]
         public async Task<ResponseDTO> GetOrderById(int id)
         {
@@ -203,7 +203,7 @@ namespace Services.OrderAPI.Controllers
             return _response;
         }
 
-        [Authorize]
+       
         [HttpPost("UpdateOrderStatus/{orderId:int}")]
         public async Task<ResponseDTO>  UpdateOrderStatus([FromRoute] int orderId, [FromBody] string newStatus)
         {
