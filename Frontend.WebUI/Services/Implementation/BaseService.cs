@@ -59,7 +59,12 @@ namespace Frontend.WebUI.Services.Implementation
 								content.Add(new StreamContent(file.OpenReadStream()), item.Name, file.FileName);
 							}
 						}
+						else
+						{
+							content.Add(new StringContent(value == null ? "" : value.ToString()), item.Name);
+						}
 					}
+					message.Content = content;
 				}
 				else if (requestDTO.Data != null)
 				{

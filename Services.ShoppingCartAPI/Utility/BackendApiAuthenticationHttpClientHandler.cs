@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 namespace Services.ShoppingCartAPI.Utility
 {
     // su dung khi co authorize controller o cac service khac
+    // service nay goi sang service khac khong ma khong login
     public class BackendApiAuthenticationHttpClientHandler : DelegatingHandler
     {
         private readonly IHttpContextAccessor _accessor;
