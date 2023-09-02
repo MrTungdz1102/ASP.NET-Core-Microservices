@@ -10,9 +10,9 @@ namespace Frontend.WebUI.Services.Implementation
 	public class BaseService : IBaseService
 	{
 		private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ITokenProvider _token;
+		private readonly ITokenProvider _token;
 
-        public BaseService(IHttpClientFactory httpClientFactory, ITokenProvider token)
+		public BaseService(IHttpClientFactory httpClientFactory, ITokenProvider token)
 		{
 			_httpClientFactory = httpClientFactory;
 			_token = token;
@@ -26,19 +26,46 @@ namespace Frontend.WebUI.Services.Implementation
 
 				// ưu tiên nhận dữ liệu dưới định dạng JSON nếu có sẵn
 				// client vẫn sẽ nhận được dữ liệu nếu dữ liệu trả về khác với json
-				message.Headers.Add("Accept", "application/json");
+				if (requestDTO.ContentType == ContentType.MultipartFormData)
+				{
+					message.Headers.Add("Accept", "*/*");
+				}
+				else
+				{
+					message.Headers.Add("Accept", "application/json");
+				}
 
-				if(withBearer)
+
+				if (withBearer)
 				{
 					var token = _token.GetToken();
 					message.Headers.Add("Authorization", $"Bearer {token}");
 				}
 
 				message.RequestUri = new Uri(requestDTO.Url);
-				if (requestDTO.Data != null)
+
+				if (requestDTO.ContentType == ContentType.MultipartFormData)
+				{
+					var content = new MultipartFormDataContent();
+					foreach (var item in requestDTO.Data.GetType().GetProperties())
+					{
+						var value = item.GetValue(requestDTO.Data);
+						// chi upload file neu file co kieu iformfile
+						if (value is FormFile)
+						{
+							var file = (FormFile)value;
+							if (file is not null)
+							{
+								content.Add(new StreamContent(file.OpenReadStream()), item.Name, file.FileName);
+							}
+						}
+					}
+				}
+				else if (requestDTO.Data != null)
 				{
 					message.Content = new StringContent(JsonConvert.SerializeObject(requestDTO.Data), Encoding.UTF8, "application/json");
 				}
+
 				HttpResponseMessage? responseMessage = null;
 				switch (requestDTO.ApiType)
 				{

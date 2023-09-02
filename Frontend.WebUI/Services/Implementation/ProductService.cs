@@ -18,7 +18,8 @@ namespace Frontend.WebUI.Services.Implementation
             {
                 Url = Utility.Constants.ProductAPIBase + "/api/ProductAPI/CreateProduct",
                 Data = productDTO,
-                ApiType = Utility.Constants.ApiType.POST
+                ApiType = Utility.Constants.ApiType.POST,
+                ContentType = Utility.Constants.ContentType.MultipartFormData
             });
         }
 
@@ -55,8 +56,9 @@ namespace Frontend.WebUI.Services.Implementation
             {
                 Url = Utility.Constants.ProductAPIBase + "/api/ProductAPI/UpdateProduct/" + id,
                 ApiType = Utility.Constants.ApiType.PUT,
-                Data = productDTO
-            });
+                Data = productDTO,
+				ContentType = Utility.Constants.ContentType.MultipartFormData
+			});
         }
     }
 }
