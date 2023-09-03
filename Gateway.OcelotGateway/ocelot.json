@@ -90,8 +90,8 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
-    },
-    // shopping cart
+    } // shopping cart
+    ,
     {
       "DownstreamPathTemplate": "/api/ShoppingCartAPI/{everything}",
       "DownstreamScheme": "https",

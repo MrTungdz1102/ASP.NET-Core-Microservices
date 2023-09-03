@@ -5,6 +5,7 @@ using Microsoft.Identity.Client;
 using Services.AuthAPI.Configuration;
 using Services.AuthAPI.Data;
 using Services.AuthAPI.Models;
+using Services.AuthAPI.RabbitMqSender;
 using Services.AuthAPI.Services.Implementation;
 using Services.AuthAPI.Services.Interface;
 
@@ -28,6 +29,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<A
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IRabbitMQAuthMessage, RabbitMQAuthMessage>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

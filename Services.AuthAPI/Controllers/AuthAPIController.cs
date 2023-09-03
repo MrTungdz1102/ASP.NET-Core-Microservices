@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Services.AuthAPI.Models.DTOs;
+using Services.AuthAPI.RabbitMqSender;
 using Services.AuthAPI.Services.Interface;
 
 namespace Services.AuthAPI.Controllers
@@ -15,14 +16,17 @@ namespace Services.AuthAPI.Controllers
 	{
 		private readonly IAuthService _auth;
 		private ResponseDTO _response;
+		private readonly IRabbitMQAuthMessage _rabbitMQAuthMessage;
 		private readonly IConfiguration _configuration;
 		private readonly IMessageBus _messageBus;
-		public AuthAPIController(IAuthService auth, IConfiguration configuration, IMessageBus messageBus)
+		public AuthAPIController(IAuthService auth, IConfiguration configuration, IMessageBus messageBus,
+			IRabbitMQAuthMessage rabbitMQAuthMessage)
 		{
 			_auth = auth;
 			_messageBus = messageBus;
 			_configuration = configuration;
 			_response = new ResponseDTO();
+			_rabbitMQAuthMessage = rabbitMQAuthMessage;
 		}
 		[HttpPost("register")]
 		public async Task<IActionResult> Register([FromBody] RegistrationRequestDTO registration)
@@ -41,7 +45,10 @@ namespace Services.AuthAPI.Controllers
 			{
 				_response.Message = "Thanh cong";
 				// using azure message bus
-               // await _messageBus.PublishMessage(registration.Email, _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserEmailQueue"));
+				// await _messageBus.PublishMessage(registration.Email, _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserEmailQueue"));
+
+				// rabbitmq
+				_rabbitMQAuthMessage.SendMessage(registration.Email, _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserEmailQueue"));
             }
 			return Ok(_response);
 		}
