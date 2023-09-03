@@ -6,7 +6,7 @@ namespace Services.ShoppingCartAPI.Configuration
 {
     public static class WebApplicationBuilderExtensions
     {
-        public static WebApplicationBuilder AddAppAuthetication(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder AddAppAuthentication(this WebApplicationBuilder builder)
         {
             var Secretkey = builder.Configuration["ApiSettings:SecretKey"];
             var Issuer = builder.Configuration["ApiSettings:Issuer"];
