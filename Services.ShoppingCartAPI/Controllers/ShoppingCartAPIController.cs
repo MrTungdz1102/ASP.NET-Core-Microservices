@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.ShoppingCartAPI.Data;
 using Services.ShoppingCartAPI.Models;
 using Services.ShoppingCartAPI.Models.DTOs;
+using Services.ShoppingCartAPI.RabbitMqSender;
 using Services.ShoppingCartAPI.Service.Interface;
 using System.Reflection.PortableExecutable;
 
@@ -19,15 +20,18 @@ namespace Services.ShoppingCartAPI.Controllers
         private ResponseDTO _response;
         private readonly IProductService _productService;
         private readonly ICouponService _couponService;
-
+        private readonly IRabbitMQCartMessage _rabbitMQAuth;
+        private readonly IConfiguration _configuration;
         public ShoppingCartAPIController(AppDbContext context, IMapper mapper, IProductService productService,
-            ICouponService couponService)
+            ICouponService couponService, IRabbitMQCartMessage rabbitMQAuth, IConfiguration configuration)
         {
             _context = context;
             _mapper = mapper;
             _response = new ResponseDTO();
             _productService = productService;
             _couponService = couponService;
+            _rabbitMQAuth = rabbitMQAuth;
+            _configuration = configuration;
         }
 
         [HttpGet("GetCart/{userId}")]
@@ -132,8 +136,25 @@ namespace Services.ShoppingCartAPI.Controllers
             _response.Result = cartDTO;
             return _response;
         }
+        
+		[HttpPost("EmailCartRequest")]
+		public async Task<object> EmailCartRequest([FromBody] CartDTO cartDto)
+		{
+			try
+			{
+                // rabbitmq
+				_rabbitMQAuth.SendMessage(cartDto, _configuration["TopicAndQueueNames:EmailShoppingCartQueue"]);
+				_response.Result = true;
+			}
+			catch (Exception ex)
+			{
+				_response.IsSuccess = false;
+				_response.Message = ex.ToString();
+			}
+			return _response;
+		}
 
-        [HttpPost("RemoveCart")]
+		[HttpPost("RemoveCart")]
         public async Task<ResponseDTO> RemoveCart([FromBody] int cartDetailsId)
         {
             try

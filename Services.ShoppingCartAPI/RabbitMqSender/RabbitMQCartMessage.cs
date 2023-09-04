@@ -2,15 +2,15 @@
 using RabbitMQ.Client;
 using System.Text;
 
-namespace Services.AuthAPI.RabbitMqSender
+namespace Services.ShoppingCartAPI.RabbitMqSender
 {
-	public class RabbitMQAuthMessage : IRabbitMQAuthMessage
+	public class RabbitMQCartMessage : IRabbitMQCartMessage
 	{
 		private readonly string _hostName;
 		private readonly string _userName;
 		private readonly string _passWord;
 		private IConnection? _connection;
-		public RabbitMQAuthMessage()
+		public RabbitMQCartMessage()
 		{
 			_hostName = "localhost";
 			_userName = "guest";

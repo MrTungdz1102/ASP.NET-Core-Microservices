@@ -105,7 +105,7 @@ namespace Services.ShoppingCartAPI.Controllers
         {
             try
             {
-                await _messageBus.PublishMessage(cartDto, "name");
+                await _messageBus.PublishMessage(cartDto, "emailshoppingcart");
                 _response.Result = true;
             }
             catch (Exception ex)

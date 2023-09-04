@@ -1,10 +1,10 @@
 using Integration.MessageBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Microsoft.OpenApi.Models;
 using Services.ShoppingCartAPI.Configuration;
 using Services.ShoppingCartAPI.Data;
+using Services.ShoppingCartAPI.RabbitMqSender;
 using Services.ShoppingCartAPI.Service.Implementation;
 using Services.ShoppingCartAPI.Service.Interface;
 using Services.ShoppingCartAPI.Utility;
@@ -22,7 +22,7 @@ builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddAutoMapper(typeof(MapConfig));
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
-
+builder.Services.AddScoped<IRabbitMQCartMessage, RabbitMQCartMessage>();
 // message bus
 builder.Services.AddScoped<IMessageBus, MessageBus>();
 
