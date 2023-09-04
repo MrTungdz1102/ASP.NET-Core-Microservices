@@ -1,28 +1,27 @@
 ﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Services.EmailAPI.Models;
-using Services.EmailAPI.Models.DTOs;
-using Services.EmailAPI.Services;
+using Services.TopicSubscriptionAPI.Models;
+using Services.TopicSubscriptionAPI.Services;
 using System.Text;
 using System.Threading.Channels;
 
-namespace Services.EmailAPI.Messages
+namespace Services.TopicSubscriptionAPI.Messages
 {
 
-    public class RabbitMQOrderConsumer : BackgroundService
+	public class RabbitMQOrderConsumerFanout : BackgroundService
 	{
 		// co the trien khai interface start, stop giong voi azure message bus
 
-		private readonly EmailService _emailService;
 		private readonly IConfiguration _configuration;
 		private IConnection? _connection;
 		private IModel _channel;
 		private string queueName = "";
-		public RabbitMQOrderConsumer(IConfiguration configuration, EmailService emailService)
+		private readonly TopicService _topicService;
+		public RabbitMQOrderConsumerFanout(IConfiguration configuration, TopicService topicService)
 		{
 			_configuration = configuration;
-			_emailService = emailService;
+			_topicService = topicService;
 			var factory = new ConnectionFactory
 			{
 				HostName = "localhost",
@@ -43,7 +42,7 @@ namespace Services.EmailAPI.Messages
 			consumer.Received += async (sender, e) =>
 			{
 				var content = Encoding.UTF8.GetString(e.Body.ToArray());
-				TopicEmailMessage exchangeFanout = JsonConvert.DeserializeObject<TopicEmailMessage>(content);
+				TopicRewardMessage exchangeFanout = JsonConvert.DeserializeObject<TopicRewardMessage>(content);
 				await HandleMessage(exchangeFanout);
 
 				_channel.BasicAck(e.DeliveryTag, false);
@@ -51,9 +50,9 @@ namespace Services.EmailAPI.Messages
 			_channel.BasicConsume(queueName, false, consumer);
 		}
 
-		private async Task HandleMessage(TopicEmailMessage exchangeFanout)
+		private async Task HandleMessage(TopicRewardMessage exchangeFanout)
 		{
-			await _emailService.LogOrderPlaced(exchangeFanout);
+			await _topicService.UpdateRewardTopic(exchangeFanout);
 		}
 	}
 }

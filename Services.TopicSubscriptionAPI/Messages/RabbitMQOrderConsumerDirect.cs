@@ -9,16 +9,17 @@ using System.Threading.Channels;
 namespace Services.TopicSubscriptionAPI.Messages
 {
 
-	public class RabbitMQOrderConsumer : BackgroundService
+	public class RabbitMQOrderConsumerDirect : BackgroundService
 	{
 		// co the trien khai interface start, stop giong voi azure message bus
 
 		private readonly IConfiguration _configuration;
 		private IConnection? _connection;
 		private IModel _channel;
-		private string queueName = "";
 		private readonly TopicService _topicService;
-		public RabbitMQOrderConsumer(IConfiguration configuration, TopicService topicService)
+		private string OrderCreated_RewardsUpdateQueue = "RewardsUpdateQueue";
+		private string ExchangeName = "";
+		public RabbitMQOrderConsumerDirect(IConfiguration configuration, TopicService topicService)
 		{
 			_configuration = configuration;
 			_topicService = topicService;
@@ -28,11 +29,12 @@ namespace Services.TopicSubscriptionAPI.Messages
 				UserName = "guest",
 				Password = "guest"
 			};
+			ExchangeName = _configuration["TopicAndQueueNames:OrderCreatedTopic"];
 			_connection = factory.CreateConnection();
 			_channel = _connection.CreateModel();
-			_channel.ExchangeDeclare(_configuration["TopicAndQueueNames:OrderCreatedTopic"], ExchangeType.Fanout);
-			queueName = _channel.QueueDeclare().QueueName;
-			_channel.QueueBind(queueName, _configuration["TopicAndQueueNames:OrderCreatedTopic"], "");
+			_channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
+			_channel.QueueDeclare(OrderCreated_RewardsUpdateQueue, false, false, false, null);
+			_channel.QueueBind(OrderCreated_RewardsUpdateQueue, ExchangeName, "RewardsUpdate");
 		}
 		protected async override Task ExecuteAsync(CancellationToken stoppingToken)
 		{
@@ -47,7 +49,7 @@ namespace Services.TopicSubscriptionAPI.Messages
 
 				_channel.BasicAck(e.DeliveryTag, false);
 			};
-			_channel.BasicConsume(queueName, false, consumer);
+			_channel.BasicConsume(OrderCreated_RewardsUpdateQueue, false, consumer);
 		}
 
 		private async Task HandleMessage(TopicRewardMessage exchangeFanout)

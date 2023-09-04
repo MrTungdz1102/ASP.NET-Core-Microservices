@@ -4,13 +4,14 @@ using System.Text;
 
 namespace Services.OrderAPI.RabbitMqSender
 {
-	public class RabbitMQOrderMessage : IRabbitMQOrderMessage
+	public class RabbitMQOrderMessageFanout : IRabbitMQOrderMessage
 	{
+		// fanout exchange
 		private readonly string _hostName;
 		private readonly string _userName;
 		private readonly string _passWord;
 		private IConnection? _connection;
-		public RabbitMQOrderMessage()
+		public RabbitMQOrderMessageFanout()
 		{
 			_hostName = "localhost";
 			_userName = "guest";
@@ -25,7 +26,7 @@ namespace Services.OrderAPI.RabbitMqSender
 			using var channel = _connection.CreateModel();
 			// durable = true thi khi ung dung restart, exchange van ton tai
 			channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout, durable: false);
-
+			
 			var json = JsonConvert.SerializeObject(message);
 			var body = Encoding.UTF8.GetBytes(json);
 

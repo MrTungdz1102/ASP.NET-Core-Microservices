@@ -22,7 +22,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddAutoMapper(typeof(MapConfig));
 builder.Services.AddScoped<IMessageBus, MessageBus>();
-builder.Services.AddScoped<IRabbitMQOrderMessage, RabbitMQOrderMessage>();
+builder.Services.AddScoped<IRabbitMQOrderMessage, RabbitMQOrderMessageFanout>();
+builder.Services.AddScoped<IRabbitMQOrderMessage, RabbitMQOrderMessageDirect>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddHttpClient("Product", u => u.BaseAddress =
 new Uri(builder.Configuration["ServiceUrls:ProductAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();

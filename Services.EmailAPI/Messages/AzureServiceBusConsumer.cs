@@ -66,7 +66,7 @@ namespace Services.EmailAPI.Messages
             try
             {
                 //TODO - try to log email
-                await _emailService.LogOrderPlaced(topicEmailMessage)
+                await _emailService.LogOrderPlaced(topicEmailMessage);
                 await arg.CompleteMessageAsync(arg.Message);
             }
             catch (Exception ex)

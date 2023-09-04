@@ -1,6 +1,6 @@
 ﻿namespace Services.OrderAPI.RabbitMqSender
 {
-	public interface IRabbitMQCartMessage
+	public interface IRabbitMQOrderMessage
 	{
 		void SendMessage(object message, string exchangeName);
 	}
