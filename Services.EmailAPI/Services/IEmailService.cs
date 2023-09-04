@@ -1,4 +1,4 @@
-﻿using Services.EmailAPI.Messages;
+﻿using Services.EmailAPI.Models;
 using Services.EmailAPI.Models.DTOs;
 
 namespace Services.EmailAPI.Services

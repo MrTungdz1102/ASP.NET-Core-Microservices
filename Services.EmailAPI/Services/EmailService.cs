@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Services.EmailAPI.Data;
-using Services.EmailAPI.Messages;
 using Services.EmailAPI.Models;
 using Services.EmailAPI.Models.DTOs;
 using System.Text;

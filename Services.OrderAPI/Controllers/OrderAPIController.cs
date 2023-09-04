@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.OrderAPI.Data;
 using Services.OrderAPI.Models;
 using Services.OrderAPI.Models.DTOs;
+using Services.OrderAPI.RabbitMqSender;
 using Services.OrderAPI.Service.Interface;
 using Stripe.Checkout;
 
@@ -13,7 +14,7 @@ namespace Services.OrderAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class OrderAPIController : ControllerBase
     {
         protected ResponseDTO _response;
@@ -22,7 +23,8 @@ namespace Services.OrderAPI.Controllers
         private readonly AppDbContext _context;
         private readonly IMessageBus _messageBus;
         private readonly IConfiguration _configuration;
-        public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService, IConfiguration configuration, IMessageBus messageBus)
+        private readonly IRabbitMQOrderMessage _rabbitMQOrder; 
+		public OrderAPIController(AppDbContext context, IMapper mapper, IProductService productService, IConfiguration configuration, IMessageBus messageBus, IRabbitMQOrderMessage rabbitMQOrder)
         {
             _context = context;
             _mapper = mapper;
@@ -30,6 +32,7 @@ namespace Services.OrderAPI.Controllers
             _response = new ResponseDTO();
             _configuration = configuration;
             _messageBus = messageBus;
+            _rabbitMQOrder = rabbitMQOrder;
         }
 
         [HttpPost("CreateOrder")]
@@ -145,8 +148,12 @@ namespace Services.OrderAPI.Controllers
                         TopicActivity = Convert.ToInt32(orderHeader.OrderTotal)
                     };
                     // _configuration["TopicAndQueueNames:OrderCreatedTopic"]
-                    string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
-                    await _messageBus.PublishMessage(topicDTO, topicName);
+                    // message bus
+                    //string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+                    //await _messageBus.PublishMessage(topicDTO, topicName);
+
+                    // rabbitmq
+                    _rabbitMQOrder.SendMessage(topicDTO, _configuration["TopicAndQueueNames:OrderCreatedTopic"]);
 
                     _response.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
                 }

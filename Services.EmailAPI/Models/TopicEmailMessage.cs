@@ -1,6 +1,6 @@
-﻿namespace Services.TopicSubscriptionAPI.Messages
+﻿namespace Services.EmailAPI.Models
 {
-    public class TopicRewardMessage
+    public class TopicEmailMessage
     {
         public string UserId { get; set; }
         public int TopicActivity { get; set; }

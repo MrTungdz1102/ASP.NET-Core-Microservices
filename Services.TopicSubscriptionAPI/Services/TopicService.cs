@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Services.TopicSubscriptionAPI.Data;
-using Services.TopicSubscriptionAPI.Messages;
 using Services.TopicSubscriptionAPI.Models;
 
 namespace Services.TopicSubscriptionAPI.Services

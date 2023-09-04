@@ -1,4 +1,4 @@
-﻿using Services.TopicSubscriptionAPI.Messages;
+﻿using Services.TopicSubscriptionAPI.Models;
 
 namespace Services.TopicSubscriptionAPI.Services
 {

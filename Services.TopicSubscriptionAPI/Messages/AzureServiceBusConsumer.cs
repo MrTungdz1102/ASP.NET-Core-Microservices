@@ -1,5 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
+using Services.TopicSubscriptionAPI.Models;
 using Services.TopicSubscriptionAPI.Services;
 using System.Text;
 

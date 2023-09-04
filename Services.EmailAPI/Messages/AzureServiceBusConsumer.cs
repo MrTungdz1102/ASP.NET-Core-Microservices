@@ -1,5 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
+using Services.EmailAPI.Models;
 using Services.EmailAPI.Models.DTOs;
 using Services.EmailAPI.Services;
 using System.Text;

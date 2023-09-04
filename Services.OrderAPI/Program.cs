@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Services.OrderAPI.Configuration;
 using Services.OrderAPI.Data;
+using Services.OrderAPI.RabbitMqSender;
 using Services.OrderAPI.Service.Implementation;
 using Services.OrderAPI.Service.Interface;
 using Services.OrderAPI.Utility;
@@ -21,6 +22,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddAutoMapper(typeof(MapConfig));
 builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IRabbitMQOrderMessage, RabbitMQOrderMessage>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddHttpClient("Product", u => u.BaseAddress =
 new Uri(builder.Configuration["ServiceUrls:ProductAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
